@@ -165,6 +165,14 @@ func listen[T any](res *http.Response, cb callback[T]) {
 			// 	return
 		}
 	}
+	if err := scanner.Err(); err != nil {
+		if err == io.EOF {
+			cb(nil, true, nil)
+			return
+		}
+		cb(nil, true, err)
+		return
+	}
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T, cb callback[T]) (T, error) {
